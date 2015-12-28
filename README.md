@@ -50,11 +50,11 @@ Naming Scheme:<br>
 &nbsp;&nbsp;&nbsp;Programmed in C using the XC8 Complier<br>
 &nbsp;&nbsp;Controller Purpose:<br>
 &nbsp;&nbsp;&nbsp;UI on the QuadCopter<br>
-		
-&nbsp;PPQCU_RC_REMOTE   (To Be Included):
-&nbsp;&nbsp;MicroController:
-&nbsp;&nbsp;&nbsp;PIC18F26K22
-&nbsp;&nbsp;Language/Compiler:
-&nbsp;&nbsp;&nbsp;Programmed in C using the XC8 Complier
-&nbsp;&nbsp;MicroController Purpose:
-&nbsp;&nbsp;&nbsp;Main Processor on the Remote Controller
+<br>	
+&nbsp;PPQCU_RC_REMOTE   (To Be Included):<br>
+&nbsp;&nbsp;MicroController:<br>
+&nbsp;&nbsp;&nbsp;PIC18F26K22<br>
+&nbsp;&nbsp;Language/Compiler:<br>
+&nbsp;&nbsp;&nbsp;Programmed in C using the XC8 Complier<br>
+&nbsp;&nbsp;MicroController Purpose:<br>
+&nbsp;&nbsp;&nbsp;Main Processor on the Remote Controller<br>
