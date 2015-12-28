@@ -26,7 +26,14 @@
 *.app
 *.i*86
 *.x86_64
-*.hex
+
+# Mplab X Stuff
+Makefile
+build/
+debug/
+dist/
+nbproject/
 
 # Debug files
 *.dSYM/
+
