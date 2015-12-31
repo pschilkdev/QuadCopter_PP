@@ -86,6 +86,10 @@ void init_INT() {
     
 }
 
+void handshake(){
+    
+}
+
 void init_I2C(){
     //TODO
 }
