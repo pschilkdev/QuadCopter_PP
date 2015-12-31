@@ -18,7 +18,7 @@ Naming Scheme:<br>
 &nbsp;&nbsp;Name of the Processor<br>
 <br>
 <br>	
-<b>Programs Included/To be included:</b><br>
+<b>Programs Included:</b><br>
 &nbsp;PPQCU_CU_MAIN:<br>
 &nbsp;&nbsp;MicroController:<br>
 &nbsp;&nbsp;&nbsp;PIC32MX120F064H<br>
@@ -27,7 +27,7 @@ Naming Scheme:<br>
 &nbsp;&nbsp;MicroController Purpose:<br>
 &nbsp;&nbsp;&nbsp;Main processor on the Control Unit<br>
 <br>
-&nbsp;PPQCU_CU_BATSENSE (To Be Included):<br>
+&nbsp;PPQCU_CU_BATSENSE:<br>
 &nbsp;&nbsp;MicroController:<br>
 &nbsp;&nbsp;&nbsp;PIC12F1840<br>
 &nbsp;&nbsp;Language/Compiler:<br>
@@ -35,7 +35,7 @@ Naming Scheme:<br>
 &nbsp;&nbsp;MicroController Purpose:<br>
 &nbsp;&nbsp;&nbsp;Battery Level Sensing, and low battery warning<br>
 <br>
-&nbsp;PPQCU_CU_INTERFACE(To Be Included):<br>
+&nbsp;PPQCU_CU_INTERFACE:<br>
 &nbsp;&nbsp;MicroController:<br>
 &nbsp;&nbsp;&nbsp;PIC12F1840<br>
 &nbsp;&nbsp;Language/Compiler:<br>
@@ -43,7 +43,7 @@ Naming Scheme:<br>
 &nbsp;&nbsp;MicroController Purpose:<br>
 &nbsp;&nbsp;&nbsp;Interfacing to the ESC and, in turn, the motors.<br>
 <br>
-&nbsp;PPQCU_CU_LIGHTS   (To Be Included):<br>
+&nbsp;PPQCU_CU_LIGHTS:<br>
 &nbsp;&nbsp;MicroController:<br>
 &nbsp;&nbsp;&nbsp;PIC12F1840<br>
 &nbsp;&nbsp;Language/Compiler:<br>
@@ -51,7 +51,7 @@ Naming Scheme:<br>
 &nbsp;&nbsp;Controller Purpose:<br>
 &nbsp;&nbsp;&nbsp;UI on the QuadCopter<br>
 <br>	
-&nbsp;PPQCU_RC_REMOTE   (To Be Included):<br>
+&nbsp;PPQCU_RC_REMOTE:<br>
 &nbsp;&nbsp;MicroController:<br>
 &nbsp;&nbsp;&nbsp;PIC18F26K22<br>
 &nbsp;&nbsp;Language/Compiler:<br>
