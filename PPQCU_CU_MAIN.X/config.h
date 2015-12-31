@@ -11,8 +11,10 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+    
 #include <p32xxxx.h>
 #include <xc.h>
+#include "SPI.h"
 
 // DEVCFG3
 // USERID = No Setting
