@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "config.h"
 
+
 //INIT
 void init_OSC();
 void init_INT();
@@ -22,38 +23,37 @@ void reset_mux();
 void timeout();
 
 //Servo Values
-int Serv1 = 0;
-int Serv2 = 0;
-int Serv3 = 0;
-int Serv4 = 0;
-int Serv5 = 0;
-int Serv6 = 0;
+int Serv1;
+int Serv2;
+int Serv3;
+int Serv4;
+int Serv5;
+int Serv6;
 
 
 /*
  *  
  */
 int main(int argc, char** argv) {
-
-    init_OSC();
+  init_OSC();
     init_INT();
     init_I2C();
     
     handshake();
-    
-    while(1){
+       while(1){
         read_data();
-        output(Serv1);
-        output(Serv2);
-        output(Serv3);
-        output(Serv4);
-        output(Serv5);
-        output(Serv6);
-        reset_mux();
-        timeout();
+//        output(Serv1);
+//        output(Serv2);
+//        output(Serv3);
+//        output(Serv4);
+//        output(Serv5);
+//        output(Serv6);
+//        reset_mux();
+//        timeout();
     }
     
     return (EXIT_SUCCESS);
+ 
 }
 
 void init_OSC() {
@@ -86,11 +86,16 @@ void init_INT() {
     
 }
 
-void handshake(){
-    
+void init_I2C(){
+    //TODO
 }
 
-void init_I2C(){
+
+void handshake(){
+    //TODO
+}
+
+void read_data(){
     //TODO
 }
 
@@ -105,3 +110,4 @@ void reset_mux(){
 void timeout(){
     //TODO
 }
+ 
