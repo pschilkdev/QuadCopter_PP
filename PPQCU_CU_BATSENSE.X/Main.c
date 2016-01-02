@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
     init_ADC();
     init_I2C();
     init_INT();
+    init_IO();
 
     handshake();
 
@@ -81,6 +82,15 @@ void init_INT() {
 
 }
 
+void init_IO() {
+    ANSELA = 0b0001000;
+    TRISAbits.TRISA5 = 0;
+    TRISAbits.TRISA4 = 1;
+    TRISAbits.TRISA0 = 0;
+    TRISAbits.TRISA1 = 1;
+    TRISAbits.TRISA2 = 1;
+}
+
 void handshake() {
     thresh1 = 500;
     thresh2 = 400;
@@ -99,11 +109,11 @@ int checkBattery() {
     for (int i = 0; i < 15; i++) {
         asm("nop");
     }
-    int val = (v1+v2+v3)/4;
+    int val = (v1 + v2 + v3) / 4;
 
     if (val <= thresh1) {
         return 1;
-    } else if (val <= thresh2){
+    } else if (val <= thresh2) {
         return 2;
     } else {
         return 0;
