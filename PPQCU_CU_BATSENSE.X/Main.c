@@ -10,13 +10,39 @@
 #include "config.h"
 
 void init_OSC();
+void init_ADC();
+void init_I2C();
+void init_INT();
+void handshake();
+int checkBattery();
 
 /*
  * 
  */
+
+int status;
+
 int main(int argc, char** argv) {
     
     init_OSC();
+    init_ADC();
+    init_I2C();
+    init_INT();
+    
+    handshake();
+    
+    while(1){
+        status = checkBattery();
+        
+        if(status == 0){
+            //Batter Ok
+        } if (status == 1){
+            //Warn Stage 1
+        } if (status == 2){
+            //Warn Stage 2
+        }
+        
+    }
     
     return (EXIT_SUCCESS);
 }
@@ -32,3 +58,22 @@ void init_OSC() {
 
 }
 
+void init_ADC(){
+    
+}
+
+void init_I2C(){
+    
+}
+
+void init_INT(){
+    
+}
+
+void handshake(){
+    
+}
+
+int checkBattery(){
+    
+}
