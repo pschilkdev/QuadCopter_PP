@@ -1,4 +1,5 @@
 #include "SPI.h"
+#include "config.h"
 
 void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
     //Calc Prescalar for Baud
