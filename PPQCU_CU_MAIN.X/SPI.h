@@ -58,6 +58,7 @@ extern "C" {
      *       ======= Functions =======
      */
     void SPI_init(SPI_CHANNEL, SPI_INITF, int baud);
+    int  SPI_trans(SPI_CHANNEL, int data);
 
 #ifdef	__cplusplus
 }
