@@ -14,15 +14,15 @@
 void init_OSC();
 void init_INT();
 void init_I2C();
+void init_IO();
 
 //OPERATION
 void handshake();
-void read_data();
 void output(int value);
 void reset_mux();
 void timeout();
 
-//Servo Values
+//Servo Values (0 - 2^13)
 int Serv1;
 int Serv2;
 int Serv3;
@@ -30,30 +30,41 @@ int Serv4;
 int Serv5;
 int Serv6;
 
-
 /*
  *  
  */
+int i;
+
 int main(int argc, char** argv) {
-  init_OSC();
+    
+    Serv1 = 0;
+    Serv2 = 0;
+    Serv3 = 0;
+    Serv4 = 0;
+    Serv5 = 0;
+    Serv6 = 0;
+    
+    
+    init_IO();
+    init_OSC();
     init_INT();
     init_I2C();
-    
+
     handshake();
-       while(1){
-        read_data();
-//        output(Serv1);
-//        output(Serv2);
-//        output(Serv3);
-//        output(Serv4);
-//        output(Serv5);
-//        output(Serv6);
-//        reset_mux();
-//        timeout();
+    while (1) {
+        output(Serv1);
+        output(Serv2);
+        output(Serv3);
+        output(Serv4);
+        output(Serv5);
+        output(Serv6);
+        
+        timeout();
+        reset_mux();
     }
-    
+
     return (EXIT_SUCCESS);
- 
+
 }
 
 void init_OSC() {
@@ -75,39 +86,106 @@ void init_INT() {
     PIE2 = 0b0;
     PIR1 = 0b0;
     PIR1 = 0b0;
-    
-    //General Initialization
-    INTCONbits.GIE = 0b1;
-    INTCONbits.PEIE = 0b1;
-    
+
     //Timer0
+    OPTION_REGbits.TMR0CS = 0b0;
+    OPTION_REGbits.PSA = 0b0;
+    OPTION_REGbits.PS = 0b110;
     
     //Timer1
+    T1CONbits.TMR1CS = 0b00;
+    T1CONbits.T1CKPS = 0b00;
+    T1CONbits.T1OSCEN = 0b0;
+    T1CONbits.TMR1ON = 0b0;
+
+}
+
+void init_I2C() {
+    //TODO
+}
+
+void init_IO() {
+    ANSELA = 0b0;
+    TRISAbits.TRISA0 = 0;
+    TRISAbits.TRISA4 = 0;
+    TRISAbits.TRISA5 = 0;
+}
+
+void handshake() {
+    //TODO
+}
+
+
+
+int currentVal;
+char currentValH;
+char currentValL;
+
+void output(int value) {
+    //Config Timers
+    //TM1: Val Timer
+    PIR1bits.TMR1IF = 0;
+    T1CONbits.TMR1ON = 0;
+    currentVal = (((TM_VAL_PRELOAD_H << 8) | TM_VAL_PRELOAD_L) + (8185 - value));
+    currentValH = (currentVal & 0xFF00) >> 8;
+    currentValL = currentVal & 0x00FF;
+
+    //Advance MUX
+    LATAbits.LATA4 = 1;
+    for (int i = 0; i < 10; i++) {
+        asm("nop");
+    }
+    LATAbits.LATA4 = 0;
+
+    //===Time Sensitive===
+    //Start Equivelant wait (2.1 ms)
+    INTCONbits.TMR0IF = 0;
+    TMR0 = TM_EQV_PRELOAD;
     
+    //1ms default wait
+    INTCONbits.TMR0IF = 0;
+    TMR1H = TM_VAL_PRELOAD_H;
+    TMR1L = TM_VAL_PRELOAD_L;
+    T1CONbits.TMR1ON = 0b1;
+
+    //Open Gate
+    LATAbits.LATA0 = 1;
+
+    //wait for finish
+    while (!PIR1bits.TMR1IF) {
+    }
+    T1CONbits.TMR1ON = 0;
+    PIR1bits.TMR1IF = 0;
+
+    //Start valued
+    TMR1H = currentValH;
+    TMR1L = currentValL;
+    T1CONbits.TMR1ON = 1;
+
+    //wait for finish
+    while (!PIR1bits.TMR1IF) {asm("nop");}
+
+    //Close Gate
+    LATAbits.LATA0 = 0b0;
+
+    //Reset T1
+    T1CONbits.TMR1ON = 0;
+    PIR1bits.TMR1IF = 0;
+
+    //Wait till equivelant is over
+    while (!INTCONbits.TMR0IF) {asm("nop");}
+    INTCONbits.TMR0IF = 0;
 }
 
-void init_I2C(){
-    //TODO
+void reset_mux() {
+    LATAbits.LATA5 = 1;
+    for (int i = 0; i < 10; i++) {
+        asm("nop");
+    }
+    LATAbits.LATA5 = 0;
 }
 
-
-void handshake(){
-    //TODO
+void timeout() {
+    //wait till finished & I2C com 
+    //Advance mux to ready position
 }
-
-void read_data(){
-    //TODO
-}
-
-void output(int value){
-    //TODO
-}
-
-void reset_mux(){
-    //TODO
-}
-
-void timeout(){
-    //TODO
-}
- 
