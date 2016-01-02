@@ -18,6 +18,7 @@ void init_IO();
 void handshake();
 int checkBattery();
 int readADC();
+void timeout();
 
 /*
  * 
@@ -49,6 +50,8 @@ int main(int argc, char** argv) {
         if (status == 2) {
             //Warn Stage 2
         }
+        
+        //Timeout
 
     }
 
@@ -129,4 +132,8 @@ int readADC() {
         asm("nop");
     }
     return ((ADRESH << 8) | ADRESL);
+}
+
+void timeout(){
+    
 }
