@@ -33,6 +33,8 @@ build/
 debug/
 dist/
 nbproject/
+*.las
+
 
 # GDRIVE Stuff
 desktop.ini
