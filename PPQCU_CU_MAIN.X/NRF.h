@@ -14,6 +14,7 @@ extern "C" {
     
 #include "SPI.h"
 #include "config.h"
+#include <xc.h>
 
 // ====== Commands ========
     
@@ -59,8 +60,8 @@ extern "C" {
 #define NRF_RG__DYNPD 0x1C
 #define NRF_RG__FEATURE 0x1D
     
-    void NRF_init();
-    int NRF_cmd(int cmd);
+    BOOL NRF_init(char channel);
+    int NRF_cmd(char cmd);
     void NRF_wreg(char Reg,char val);
     int  NRF_rreg(char Reg);
     BOOL NRF_check();

@@ -10,6 +10,8 @@
 #include <p32xxxx.h>
 #include <xc.h>
 #include "config.h"
+#include "NRF.h"
+
 
 //Inital Configs:
 void init_INT();
@@ -26,7 +28,8 @@ void shake_NRF();
 int main(int argc, char** argv) {
     
     init_IO();
-    
+    for(int i = 0; i < 1000; i++){__asm__("nop");} 
+    __asm__("nop");
     shake_NRF(); //SHOULD BE LAST -> TIMEOUT
     return (EXIT_SUCCESS);
 }
@@ -43,5 +46,7 @@ void init_IO(){
     TRISBbits.TRISB15 = 0;//CSN
 }
 
-
+void shake_NRF(){
+    NRF_init(100);
+}
 
