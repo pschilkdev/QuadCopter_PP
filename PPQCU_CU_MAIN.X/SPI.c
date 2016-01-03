@@ -1,6 +1,6 @@
 #include "SPI.h"
 #include "config.h"
-{
+
 void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
     //Calc Prescalar for Baud
     int prsclr;
@@ -46,21 +46,29 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
     }
 }
 
-int SPI_trans(SPI_CHANNEL channel, int data){
-    if(channel ==SPI1){
+int SPI_trans(SPI_CHANNEL channel, int data) {
+    if (channel == SPI1) {
         SPI1BUF = data;
-        while(SPI1STATbits.SPIBUSY){asm("nop");}
+        while (SPI1STATbits.SPIBUSY) {
+            asm("nop");
+        }
         return SPI1BUF;
-    } else if (channel == SPI2){
+    } else if (channel == SPI2) {
         SPI2BUF = data;
-        while(SPI2STATbits.SPIBUSY){asm("nop");}
+        while (SPI2STATbits.SPIBUSY) {
+            asm("nop");
+        }
         return SPI3BUF;
-    } else if (channel == SPI3){
+    } else if (channel == SPI3) {
         SPI3BUF = data;
-        while(SPI3STATbits.SPIBUSY){asm("nop");}
-        return SPI3BUF; 
+        while (SPI3STATbits.SPIBUSY) {
+            asm("nop");
+        }
+        return SPI3BUF;
     } else {
         //?
-        while(1){asm("nop");}
+        while (1) {
+            asm("nop");
+        }
     }
 }
