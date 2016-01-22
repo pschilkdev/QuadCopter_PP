@@ -24,29 +24,45 @@ void shake_INTERFACE();
 void shake_LIGHTS();
 void shake_NRF();
 
-
 int main(int argc, char** argv) {
-    
+
     init_IO();
-    for(int i = 0; i < 1000; i++){__asm__("nop");} 
-    __asm__("nop");
-    shake_NRF(); //SHOULD BE LAST -> TIMEOUT
-    return (EXIT_SUCCESS);
+    
+    //TESTING SPI
+    SPI_init(SPI3,
+            SPI_INITF_MASTER |
+            SPI_INITF_MODE_8
+            , 9600);
+    
+    int n = 0;
+    while(1){
+        SPI_trans(SPI3, n);
+        n++;
+        for(int i = 0; i < 100000; i++){__asm__("nop");}
+    }
 }
 
-void init_IO(){
+void init_IO() {
+    
+    //Disable JTAG as it conflicts with some of the pins
+    //DEVCFG0bits.JTAGEN = 0;
+    CFGCONbits.JTAGEN = 0;
+    
     //NRF SPI:
-    ANSELB = 0x0000;
+    ANSELA = 0x0000;
+
     TRISBbits.TRISB9 = 1; //MISO
     SDI3Rbits.SDI3R = 0b0101;
-    TRISBbits.TRISB10 = 0;//MOSI
-    RPB10Rbits.RPB10R = 0b1110;
-    TRISBbits.TRISB13 = 0;//CE
-    TRISBbits.TRISB14 = 0;//SCK
-    TRISBbits.TRISB15 = 0;//CSN
+    TRISBbits.TRISB10 = 0; //MOSI
+    RPB10Rbits.RPB10R = 0b1110;    
+    TRISBbits.TRISB13 = 0; //CE
+    
+    TRISBbits.TRISB14 = 0; //SCK
+    
+    TRISBbits.TRISB15 = 0; //CSN
 }
 
-void shake_NRF(){
+void shake_NRF() {
     NRF_init(100);
 }
 
