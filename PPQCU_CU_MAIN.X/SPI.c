@@ -58,7 +58,7 @@ int SPI_trans(SPI_CHANNEL channel, int data) {
             int temp = (char) SPI1BUF;
         }
         SPI1BUF = data;
-        while (SPI1STATbits.SPIBUSY) {
+        while (SPI1STATbits.SPIBUSY | SPI1STATbits.SPIRBF) {
             __asm__("nop");
         }
         return SPI1BUF;
@@ -68,7 +68,7 @@ int SPI_trans(SPI_CHANNEL channel, int data) {
         }
         
         SPI2BUF = data;
-        while (SPI2STATbits.SPIBUSY) {
+        while (SPI2STATbits.SPIBUSY | SPI2STATbits.SPIRBF) {
             __asm__("nop");
         }
         __asm__("nop");
@@ -80,7 +80,7 @@ int SPI_trans(SPI_CHANNEL channel, int data) {
             int temp = (char) SPI3BUF;
         }
         SPI3BUF = data;
-        while ( SPI3STATbits.SPIBUSY) {
+        while ( SPI3STATbits.SPIBUSY | SPI3STATbits.SPIRBF) {
             __asm__("nop");
         }
         __asm__("nop");
