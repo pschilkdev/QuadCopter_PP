@@ -20,6 +20,7 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
             SPI1BUF = 0; //Clear Buffer
             SPI1BRG = prsclr;
             SPI1CON = flag; //Setup options determined by flags
+            SPI1CONbits.ENHBUF = 1;
             __asm__("nop"); //Just to be sure
             SPI1CONbits. ON = 1;
             __asm__("nop"); //Just to be sure
@@ -30,6 +31,7 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
             SPI2BUF = 0; //Clear Buffer
             SPI2BRG = prsclr;
             SPI2CON = flag; //Setup options determined by flags
+            SPI2CONbits.ENHBUF = 1;
             __asm__("nop"); //Just to be sure
             SPI2CONbits. ON = 1;
             __asm__("nop"); //Just to be sure
@@ -40,6 +42,7 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
             SPI3BUF = 0; //Clear Buffer
             SPI3BRG = prsclr;
             SPI3CON = flag; //Setup options determined by flags
+            SPI3CONbits.ENHBUF = 1;
             __asm__("nop"); //Just to be sure
             SPI3CONbits. ON = 1;
             __asm__("nop"); //Just to be sure
@@ -47,26 +50,46 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
     }
 }
 
+volatile int tester;
+
 int SPI_trans(SPI_CHANNEL channel, int data) {
     if (channel == SPI1) {
+        if (SPI1STATbits.SPIRBF) {
+            int temp = (char) SPI1BUF;
+        }
         SPI1BUF = data;
         while (SPI1STATbits.SPIBUSY) {
             __asm__("nop");
         }
         return SPI1BUF;
     } else if (channel == SPI2) {
+        if (SPI2STATbits.SPIRBF) {
+            int temp = (char) SPI2BUF;
+        }
+        
         SPI2BUF = data;
         while (SPI2STATbits.SPIBUSY) {
             __asm__("nop");
         }
-        return SPI3BUF;
+        __asm__("nop");
+        tester = SPI2BUF;
+        return tester;
     } else if (channel == SPI3) {
+      
+        if (SPI3STATbits.SPIRBF) {
+            int temp = (char) SPI3BUF;
+        }
         SPI3BUF = data;
-        while (SPI3STATbits.SPIBUSY) {
+        while ( SPI3STATbits.SPIBUSY) {
             __asm__("nop");
         }
-        return SPI3BUF;
+        __asm__("nop");
+        tester = SPI3BUF;
+        return tester;
+        
     } else {
+        
+        
         //?
         while (1) {
             __asm__("nop");
