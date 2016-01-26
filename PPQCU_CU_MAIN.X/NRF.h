@@ -67,7 +67,25 @@ extern "C" {
     BOOL NRF_check();
     int NRF_RXBuffer_Length();
     void NRF_RXBuffer(char*);
-    void NRF_TXBuffer(char, char*);
+    void NRF_TXBuffer(char, char*,BOOL);
+    
+    
+//CONFIG
+#define MASK_RX_DR FALSE
+#define MASK_TX_DS TRUE
+#define MASK_MAX_RT TRUE
+#define EN_CRC TRUE
+#define CRCO FALSE
+
+//EN_AA
+#define ENAA_P5 FALSE
+#define ENAA_P4 FALSE
+#define ENAA_P3 FALSE
+#define ENAA_P2 FALSE
+#define ENAA_P1 FALSE
+#define ENAA_P0 TRUE
+
+ 
 
 #define nce LATBbits.LATB13
 #define ncsn LATBbits.LATB15
