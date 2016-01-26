@@ -60,7 +60,7 @@ extern "C" {
 #define NRF_RG__DYNPD 0x1C
 #define NRF_RG__FEATURE 0x1D
     
-    BOOL NRF_init(char channel);
+    BOOL NRF_init(SPI_CHANNEL channel);
     int NRF_cmd(char cmd);
     void NRF_wreg(char Reg,char val);
     int  NRF_rreg(char Reg);
@@ -69,6 +69,19 @@ extern "C" {
     void NRF_RXBuffer(char*);
     void NRF_TXBuffer(char, char*,BOOL);
     
+//Values
+#define byte3 0b01
+#define byte4 0b10
+#define bye5  0b11    
+
+#define Mbps1 0b000
+#define Mbps2 0b001
+#define Kps250 0b100
+ 
+#define n18dbm 0b00
+#define n12dbm 0b01
+#define n6dbm 0b10
+#define n0dbm 0b11
     
 //CONFIG
 #define MASK_RX_DR FALSE
@@ -84,8 +97,37 @@ extern "C" {
 #define ENAA_P2 FALSE
 #define ENAA_P1 FALSE
 #define ENAA_P0 TRUE
+    
+//EN_RXADDR
+#define ERX_P5 FALSE
+#define ERX_P4 FALSE
+#define ERX_P3 FALSE
+#define ERX_P2 FALSE
+#define ERX_P1 FALSE
+#define ERX_P0 FALSE
 
- 
+//SETUP_AW
+#define AW byte3
+
+//SETUP_RETR
+//0b0 - 0b1111 = 250us - 4000us
+#define ARD 0b0011 
+//0-15
+#define ARC 5      
+   
+//RF_CH
+#define RF_CH 0b110100
+    
+//RF_SETUP
+#define CONT_WAVE FALSE
+#define RF_DR Mbps2
+#define PLL_LOCK FALSE
+#define RF_PWR n0dbm
+      
+//RX_PW_P0
+#define RX_PW_P0 32
+    
+    
 
 #define nce LATBbits.LATB13
 #define ncsn LATBbits.LATB15
