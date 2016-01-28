@@ -26,21 +26,17 @@ void shake_NRF();
 
 int main(int argc, char** argv) {
 
+    
+    for(int i = 0; i<10000000; i++){}
     init_IO();
     
     //TESTING SPI
-    SPI_init(SPI3,
-            SPI_INITF_MASTER |
-            SPI_INITF_MODE_8
-            , 9600);
+    shake_NRF();
     
-    int n = 0;
-    while(1){
-        SPI_trans(SPI3, n);
-        n++;
-        for(int i = 0; i < 100000; i++){__asm__("nop");}
-    }
+    
 }
+
+int tester;
 
 void init_IO() {
     
@@ -50,11 +46,26 @@ void init_IO() {
     
     //NRF SPI:
     ANSELA = 0x0000;
-
+    ANSELB = 0x0000;
+    ANSELC = 0x0000;
+    ANSELD = 0x0000;
+    ANSELE = 0x0000;
+    ANSELF = 0x0000;
+    ANSELG = 0x0000;
+    
+    TRISB = 0;
     TRISBbits.TRISB9 = 1; //MISO
     SDI3Rbits.SDI3R = 0b0101;
+    
     TRISBbits.TRISB10 = 0; //MOSI
-    RPB10Rbits.RPB10R = 0b1110;    
+    
+    //while(1){
+      //  LATBbits.LATB10 = 1;
+        //LATBbits.LATB10 = 0;
+    //}
+    
+    RPB10Rbits.RPB10R = 0b1110;
+    
     TRISBbits.TRISB13 = 0; //CE
     
     TRISBbits.TRISB14 = 0; //SCK
@@ -63,6 +74,6 @@ void init_IO() {
 }
 
 void shake_NRF() {
-    NRF_init(100);
+    NRF_init(SPI3);
 }
 
