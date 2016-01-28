@@ -60,13 +60,13 @@ extern "C" {
 #define NRF_RG__DYNPD 0x1C
 #define NRF_RG__FEATURE 0x1D
     
-    BOOL NRF_init(SPI_CHANNEL channel);
+    void NRF_init(SPI_CHANNEL channel);
     int NRF_cmd(char cmd);
     void NRF_wreg(char Reg,char val);
     int  NRF_rreg(char Reg);
     BOOL NRF_check();
     int NRF_RXBuffer_Length();
-    void NRF_RXBuffer(char*);
+    int NRF_RXBuffer(char*);
     void NRF_TXBuffer(char, char*,BOOL);
     
 //Values
@@ -129,9 +129,12 @@ extern "C" {
     
     
 
-#define nce LATBbits.LATB13
-#define ncsn LATBbits.LATB15
+#define nce_H (LATBbits.LATB13 = 1)
+#define nce_L (LATBbits.LATB13 = 0)
     
+#define ncs_H (LATBbits.LATB15 = 1)
+#define ncs_L (LATBbits.LATB15 = 0)
+
 #define ADDRESS0 0b00101011
 #define ADDRESS1 0b00101011
 #define ADDRESS2 0b00101011

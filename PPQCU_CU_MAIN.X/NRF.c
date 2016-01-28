@@ -17,7 +17,7 @@ BOOL powerOn = TRUE;
 char currentSTATUS;
 SPI_CHANNEL spic;
 
-BOOL NRF_init(SPI_CHANNEL spic) {
+void NRF_init(SPI_CHANNEL spic) {
     //Compile Startup Settings into Default Register Values
     defCONFIG = (MASK_RX_DR << 6)|(MASK_TX_DS<< 5)|(MASK_MAX_RT<< 4)|(EN_CRC<< 3)|(CRCO<< 2);
     defEN_AA = (ENAA_P5 << 5)|(ENAA_P4 << 4)|(ENAA_P3 << 3)|(ENAA_P2 << 2)|(ENAA_P1 << 1)|(ENAA_P0);
@@ -43,8 +43,8 @@ BOOL NRF_init(SPI_CHANNEL spic) {
             SPI_INITF_SMP_END*/
             , 9600);
 
-    ncsn = 1;
-    nce = 0;
+    ncs_H;
+    nce_L;
     
     char n=0;
 
@@ -76,56 +76,56 @@ BOOL NRF_init(SPI_CHANNEL spic) {
     NRF_wreg(NRF_RG__FEATURE, 0b00000001);
 
     //Set RX Address
-    ncsn = 0;
+    ncs_L;
     SPI_trans(spic, NRF_CMD__W_REGISTER | NRF_RG__RX_ADDR_P0);
     SPI_trans(spic, ADDRESS0);
     SPI_trans(spic, ADDRESS1);
     SPI_trans(spic, ADDRESS2);
-    ncsn = 1;
+    ncs_H;
 
     //Set TX Address
-    ncsn = 0;
+    ncs_L;
     SPI_trans(spic, NRF_CMD__W_REGISTER | NRF_RG__TX_ADDR);
     SPI_trans(spic, ADDRESS0);
     SPI_trans(spic, ADDRESS1);
     SPI_trans(spic, ADDRESS2);
-    ncsn = 1;
+    ncs_H;
 
     //Flush
-    NRF_wreg(NRF_RG__STATUS, 0x70);
     NRF_cmd(NRF_CMD__FLUSH_RX);
     NRF_cmd(NRF_CMD__FLUSH_TX);
+    NRF_wreg(NRF_RG__STATUS, 0x70);
     
-    ncsn = 0;
+    //Check if Status register contains written value
+    ncs_L;
     SPI_trans(spic, 0b11111111);
-    probe = SPI_trans(spic, 0x00);
-    ncsn = 1;     
-    
-
+    probe = SPI_trans(spic, 0x70);
+    ncs_H;   
+ 
     while(probe != 0){
         __asm__("nop");
     } 
 }
 
 void NRF_wreg(char Reg, char val) {
-    ncsn = 0;
+    ncs_L;
     wreg_test1 = SPI_trans(spic, NRF_CMD__W_REGISTER |(Reg & 0b00011111));
     wreg_test2 = SPI_trans(spic, val);
-    ncsn = 1;
+    ncs_H;
 }
 
 int NRF_cmd(char cmd) {
-    ncsn = 0;
+    ncs_L;
     int val = SPI_trans(spic, cmd);
-    ncsn = 1;
+    ncs_H;
     return val;
 }
 
 int NRF_rreg(char Reg) {
-    ncsn = 0;
+    ncs_L;
     SPI_trans(spic, NRF_CMD__R_REGISTER | (Reg & 0b00011111));
     int val = SPI_trans(spic, 0b00);
-    ncsn = 1;
+    ncs_H;
     return val;
 }
 
@@ -158,10 +158,25 @@ int NRF_RXBuffer_Length() {
     return NRF_rreg(NRF_RG__RX_PW_P0);
 }
 
-void NRF_RXBuffer(char buf[]) {
-    
+int NRF_RXBuffer(char* buf) {
+    int length = NRF_RXBuffer_Length;
 }
 
-void NRF_TXBuffer(char l, char* buf, BOOL ack) {
-
+void NRF_TXBuffer(char buf[], BOOL ack) {
+    NRF_setTX();
+    ncs_L;
+    if(ack)
+        SPI_trans(spic, NRF_CMD__W_TX_PAYLOAD);
+    else
+        SPI_trans(spic, NRF_CMD__W_TX_PAYLOAD_NO_ACK);
+    
+    for(int i = 1; i <= RX_PW_P0 32; i++){
+        SPI_trans(spic, buf[i-1]);
+    }
+    
+    ncs_H;
+    nce_H;
+    __asm__("nop");
+    __asm__("nop");
+    nce_L;
 }
