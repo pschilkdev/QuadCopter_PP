@@ -51,7 +51,7 @@ extern "C" {
 #define BMI_REG__INT_TAP_0 0x63 
 #define BMI_REG__INT_MOTION_3 0x62 
 #define BMI_REG__INT_MOTION_2 0x61 
-#define BMI_REG__INT_MOTION_2 0x60 
+#define BMI_REG__INT_MOTION_1 0x60 
 #define BMI_REG__INT_MOTION_0 0x5F 
 #define BMI_REG__INT_LOWHIGH_4 0x5E 
 #define BMI_REG__INT_LOWHIGH_3 0x5D 

@@ -25,16 +25,14 @@ char BMI_trans(char operation, char address, char value) {
     return val;
 }
 
-char * BMI_read_multiple(char address, char value[], char num) {
-    int result[num];
+void BMI_read_multiple(char address, char value[], char num) {
     bcsb_L;
     int i;
     SPI_trans(spic, (BMI_READ << 7) | (address & 0b1111111));
     for (i = 1; i <= num; i++) {
-        result[i - 1] = SPI_trans(spic, value[i]);
+        value[i] = SPI_trans(spic, value[i]);
     }
     bcsb_H;
-    return result;
 }
 
 char BMI_read(char address) {
@@ -42,11 +40,11 @@ char BMI_read(char address) {
 }
 
 void BMI_write(char address, char val) {
-    return BMI_trans(BMI_WRITE & 0b1, address & 0b1111111, val);
+    BMI_trans(BMI_WRITE & 0b1, address & 0b1111111, val);
 }
 
-int BMI_read_VAL(){
-    data = BMI_read_multiple(BMI_REG__DATA_19,12);
+void BMI_read_VAL(){
+   BMI_read_multiple(BMI_REG__DATA_19,data,11);
 }
 
 int BMI_read_GYR_X(){
@@ -60,7 +58,6 @@ int BMI_read_GYR_Y(){
 int BMI_read_GYR_Z(){
     return (data[6]<<8)|data[7];
 }
-
 int BMI_read_ACC_X(){
     return (data[4]<<8)|data[5];
 }
