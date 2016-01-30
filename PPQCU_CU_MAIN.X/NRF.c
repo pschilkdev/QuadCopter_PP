@@ -162,7 +162,14 @@ int NRF_RXBuffer(char* buf) {
     int length = NRF_RXBuffer_Length;
 }
 
-void NRF_TXBuffer(char buf[], BOOL ack) {
+BOOL NRF_TX_done(){
+    return !(NRF_rreg(NRF_RG__STATUS) & 0b00100000);
+    
+}
+
+void NRF_TX(char buf[], BOOL ack) {
+    //Clear TX_Done Bit
+    NRF_wreg(NRF_RG__STATUS,0b00100000);
     NRF_setTX();
     ncs_L;
     if(ack)
@@ -170,7 +177,7 @@ void NRF_TXBuffer(char buf[], BOOL ack) {
     else
         SPI_trans(spic, NRF_CMD__W_TX_PAYLOAD_NO_ACK);
     
-    for(int i = 1; i <= RX_PW_P0 32; i++){
+    for(int i = 1; i <= RX_PW_P0; i++){
         SPI_trans(spic, buf[i-1]);
     }
     
