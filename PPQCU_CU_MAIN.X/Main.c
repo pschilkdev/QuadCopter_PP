@@ -8,32 +8,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <p32xxxx.h>
-#include <xc.h>
 #include "config.h"
 #include "NRF.h"
-
+#include <Math.h>
 
 //Inital Configs:
 void init_INT();
 void init_IO();
-
-
-//Handshakes:
-void shake_BATSENSE();
-void shake_INTERFACE();
-void shake_LIGHTS();
-void shake_NRF();
+void init_IIC();
+void init_BATSENSE();
+void init_INTERFACE();
+void init_LIGHTS();
+void init_NRF();
 
 int main(int argc, char** argv) {
 
     
     for(int i = 0; i<10000000; i++){}
+    //INIT
     init_IO();
+    init_INT();
     
-    //TESTING SPI
-    shake_NRF();
-    
-    
+   
 }
 
 int tester;
@@ -62,6 +58,9 @@ void init_IO() {
     TRISBbits.TRISB14 = 0; //SCK
     TRISBbits.TRISB15 = 0; //CSN
     
+    //Debug parallel Port
+    TRISE = 0;
+    
     //BMI
     TRISGbits.TRISG7 = 1;//MISO
     SDI2Rbits.SDI2R = 0b0001;
@@ -69,10 +68,37 @@ void init_IO() {
     RPG8Rbits.RPG8R = 0b0110;
     TRISGbits.TRISG6 = 0;//SCK
     TRISBbits.TRISB5 = 0;//CSB
+    
+    //BatWarn
+    TRISBbits.TRISB11 = 1;
+    
+    //ServIntRd
+    TRISBbits.TRISB8 = 1;
+    
+    //battled
+    //TRISF2 = 0 battled out1
+    //TRISF3 = 1 battled in
+    //TRISF6 = 0 battled out2
+    TRISFSET = 0b0001000;
+    
+    //SCLEAR
+    TRISFbits.TRISF0 = 0;
+    
+    //BUTTON INPUT & CHANNEL SELECT BITS 
+    TRISD = 0b11111110;    
 }
 
+void init_INT(){
+    
+    //IoC for BattWarn
+    
+    
+    //IoC for ServIntRD
+    
+    
+}
 
-void shake_NRF() {
+void init_NRF() {
     NRF_init(SPI3);
 }
 
