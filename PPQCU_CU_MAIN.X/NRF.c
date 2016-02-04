@@ -17,7 +17,8 @@ BOOL powerOn = TRUE;
 char currentSTATUS;
 SPI_CHANNEL spic;
 
-void NRF_init(SPI_CHANNEL spic) {
+void NRF_init(SPI_CHANNEL channel) {
+    spic = channel;
     //Compile Startup Settings into Default Register Values
     defCONFIG = (MASK_RX_DR << 6)|(MASK_TX_DS<< 5)|(MASK_MAX_RT<< 4)|(EN_CRC<< 3)|(CRCO<< 2);
     defEN_AA = (ENAA_P5 << 5)|(ENAA_P4 << 4)|(ENAA_P3 << 3)|(ENAA_P2 << 2)|(ENAA_P1 << 1)|(ENAA_P0);
@@ -55,6 +56,8 @@ void NRF_init(SPI_CHANNEL spic) {
     for (int i = 0; i < 10; i++) {
         __asm__("nop");
     }
+    
+    
     
     rndtester = NRF_rreg(NRF_RG__CONFIG);
     __asm__("NOP");
