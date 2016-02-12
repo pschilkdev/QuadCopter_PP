@@ -1,9 +1,38 @@
-#include <proc/p32mx120f064h.h>
-
 #include "IIC.h"
 
 void IIC_init(IIC_CHANNEL channel, int flags, int baud) {
-
+    //Calc Baud Rate Register
+    int baudreg = (F_PER/(2*baud)) - 2;
+    
+    //CHECK FOR VALIDITY OF BAUD RATE VALUE
+    if(baudreg < 2 || baudreg >  4095)
+    {
+        while(1){
+            //Invalid Baud Reg Value
+        }
+    }
+    if(channel == IIC2){
+        //Turn IIC off
+        I2C2CONbits.ON = 0;
+        //Write flags with bitmask
+        I2C2CONSET = (0b00000000000000000010111110100000) & flags;
+        //Write Baud Rate
+        I2C2BRG = baudreg;
+        //nop just to be sure
+        __asm__("nop");
+        I2C2CONbits.ON = 1;
+    } else {
+        //default to channel 1
+       //Turn IIC off
+        I2C1CONbits.ON = 0;
+        //Write flags with bitmask
+        I2C1CONSET = (0b00000000000000000010111110100000) & flags;
+        //Write Baud Rate
+        I2C1BRG = baudreg;
+        //nop just to be sure
+        __asm__("nop");
+        I2C1CONbits.ON = 1;
+    }
 }
 
 void IIC_clkstretch(IIC_CHANNEL channel) {
@@ -53,7 +82,7 @@ void IIC_ack(IIC_CHANNEL channel){
         I2C1CONbits.ACKEN = 1;
     }
 }
-BOOL IIC_STATUS(IIC_CHANNEL channel, IIC_STATUS stat){
+BOOL IIC_status(IIC_CHANNEL channel, IIC_STATUS stat){
    if(channel = IIC2){
        if((stat & 0x80000000)){
            return ((I2C2CON) & (0x7FFFFFFF & stat));
