@@ -83,7 +83,7 @@ void IIC_ack(IIC_CHANNEL channel){
     }
 }
 BOOL IIC_status(IIC_CHANNEL channel, IIC_STATUS stat){
-   if(channel = IIC2){
+   if(channel == IIC2){
        if((stat & 0x80000000)){
            return ((I2C2CON) & (0x7FFFFFFF & stat));
        } else {

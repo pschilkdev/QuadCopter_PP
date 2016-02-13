@@ -78,7 +78,7 @@ extern "C" {
 
     void IIC_clkstretch(IIC_CHANNEL );
     void IIC_receive(IIC_CHANNEL );
-    void IIC_stop(IIC_CHANNEL );
+    void IIC_stop(IIC_CHANNEL);
     void IIC_start(IIC_CHANNEL );
     void IIC_restart(IIC_CHANNEL );
     void IIC_ack(IIC_CHANNEL );
