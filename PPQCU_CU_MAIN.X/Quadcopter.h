@@ -12,10 +12,15 @@
 extern "C" {
 #endif
 
-#define IIC_ADR_MPL 0x60
 #define IIC_ADR_BAT 0x50
 #define IIC_ADR_RGB 0x40
 #define IIC_ADR_INT 0x30
+
+    typedef enum{
+       
+    }QC_LIGHTS;
+    
+#define 
 
 #ifdef	__cplusplus
 }

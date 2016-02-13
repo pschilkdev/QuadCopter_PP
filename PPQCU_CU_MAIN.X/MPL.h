@@ -12,8 +12,7 @@
 extern "C" {
 #endif
 
-
-
+#define IIC_ADR_MPL 0x60
 
 #ifdef	__cplusplus
 }

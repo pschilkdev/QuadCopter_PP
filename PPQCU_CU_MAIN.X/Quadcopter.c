@@ -36,12 +36,35 @@ void motor_updated(int mfl, int mfr, int mbl, int mbr){
     //Send ms6, wait
     IIC_put(msg);
     while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+    
+    //Stop
+    IIC_stop();
+    while(IIC_status(IIC1, IIC_STAT_STOP)){;}
+    while(IIC_status(IIC1, IIC_STAT_START)){;}
 }
 
-void light_update(int r, int g, int b, int l){
+void light_update(QC_LIGHTS lights){
+    IIC_start();
+    while(IIC_status(IIC1, IIC_STAT_START)){;}
     
+    IIC_address(IIC1, IIC_ADR_RGB, IIC_WRITE);
+    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+    
+    IIC_put(0b11111111 & lights);
+    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+    
+    IIC_stop();
+    while(IIC_status(IIC1, IIC_STAT_STOP)){;}
 }
 
 char read_battery(){
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL));
+    
+}
+
+void chips_reset(){
+    LATFbits.LATF0 = 0;
+}
+
+void chips_run(){
+    LATFbits.LATF0 = 1;
 }
