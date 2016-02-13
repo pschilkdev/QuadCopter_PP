@@ -162,7 +162,7 @@ int NRF_RXBuffer_Length() {
 }
 
 int NRF_RXBuffer(char* buf) {
-    int length = NRF_RXBuffer_Length;
+    int length = NRF_RXBuffer_Length();
 }
 
 BOOL NRF_TX_done(){
