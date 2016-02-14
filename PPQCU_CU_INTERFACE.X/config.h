@@ -42,8 +42,9 @@ typedef unsigned char BOOL;
 
 
 #define TM_EQV_PRELOAD 0x6
-#define TM_VAL_PRELOAD_L 0x00  //Preload is 16^2 - 13^2 to set "13 bit mode"
+#define TM_VAL_PRELOAD_L 0x00  
 #define TM_VAL_PRELOAD_H 0xE0 
+#define TM_OUT_PRELOAD 223
     
     
 #ifdef	__cplusplus
