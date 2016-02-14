@@ -14,6 +14,10 @@ extern "C" {
 
 #include <xc.h>
 
+typedef unsigned char BOOL;
+#define TRUE    1
+#define FALSE   0
+    
 // #pragma config statements should precede project file includes.
 // Use project enums instead of #define for ON and OFF.
 
@@ -37,7 +41,7 @@ extern "C" {
 #pragma config LVP = ON         // Low-Voltage Programming Enable (Low-voltage programming enabled)
 
 
-#define TM_EQV_PRELOAD 0
+#define TM_EQV_PRELOAD 0x6
 #define TM_VAL_PRELOAD_L 0x00  //Preload is 16^2 - 13^2 to set "13 bit mode"
 #define TM_VAL_PRELOAD_H 0xE0 
     

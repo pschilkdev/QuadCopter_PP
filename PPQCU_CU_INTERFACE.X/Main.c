@@ -22,7 +22,7 @@ void output(int value);
 void reset_mux();
 void timeout();
 
-//Servo Values (0 - 2^13)
+//Servo Values (0 - 2^12)
 int Serv1;
 int Serv2;
 int Serv3;
@@ -57,10 +57,8 @@ int main(int argc, char** argv) {
         output(Serv3);
         output(Serv4);
         output(Serv5);
-        output(Serv6);
-        
+        output(Serv6); 
         timeout();
-        reset_mux();
     }
 
     return (EXIT_SUCCESS);
@@ -90,14 +88,13 @@ void init_INT() {
     //Timer0
     OPTION_REGbits.TMR0CS = 0b0;
     OPTION_REGbits.PSA = 0b0;
-    OPTION_REGbits.PS = 0b110;
+    OPTION_REGbits.PS = 0b101;
     
     //Timer1
     T1CONbits.TMR1CS = 0b00;
     T1CONbits.T1CKPS = 0b00;
     T1CONbits.T1OSCEN = 0b0;
     T1CONbits.TMR1ON = 0b0;
-
 }
 
 void init_I2C() {
@@ -117,11 +114,14 @@ void handshake() {
 
 
 
-int currentVal;
+int  currentVal;
 char currentValH;
 char currentValL;
 
 void output(int value) {
+    //turn into 13 bit value
+    value = value << 1;
+    
     //Config Timers
     //TM1: Val Timer
     PIR1bits.TMR1IF = 0;
@@ -142,20 +142,23 @@ void output(int value) {
     INTCONbits.TMR0IF = 0;
     TMR0 = TM_EQV_PRELOAD;
     
+   
     //1ms default wait
     INTCONbits.TMR0IF = 0;
     TMR1H = TM_VAL_PRELOAD_H;
     TMR1L = TM_VAL_PRELOAD_L;
     T1CONbits.TMR1ON = 0b1;
-
+    
     //Open Gate
     LATAbits.LATA0 = 1;
 
+    
     //wait for finish
     while (!PIR1bits.TMR1IF) {
     }
     T1CONbits.TMR1ON = 0;
     PIR1bits.TMR1IF = 0;
+     
 
     //Start valued
     TMR1H = currentValH;
@@ -169,12 +172,14 @@ void output(int value) {
     LATAbits.LATA0 = 0b0;
 
     //Reset T1
+
     T1CONbits.TMR1ON = 0;
     PIR1bits.TMR1IF = 0;
 
     //Wait till equivelant is over
     while (!INTCONbits.TMR0IF) {asm("nop");}
     INTCONbits.TMR0IF = 0;
+    
 }
 
 void reset_mux() {
@@ -186,6 +191,18 @@ void reset_mux() {
 }
 
 void timeout() {
-    //wait till finished & I2C com 
+    //Enable I2C com 
+    
     //Advance mux to ready position
+    LATAbits.LATA4 = 1;
+    for (int i = 0; i < 10; i++) {
+        asm("nop");
+    }
+    LATAbits.LATA4 = 0;
+    
+    //Wait till over
+    
+    //reset mux
+    
+    //disable I2C com
 }
