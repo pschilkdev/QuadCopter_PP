@@ -40,6 +40,10 @@ nbproject/
 # GDRIVE Stuff
 desktop.ini
 
+#KiCad
+_saved_*
+*.bak
+
 # Debug files
 *.dSYM/
 
