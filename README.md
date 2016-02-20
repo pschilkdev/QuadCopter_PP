@@ -1,10 +1,11 @@
 # QuadCopter_PP<br>
-Main Repository for all code for the Quadcopter Project.<br>
+Main Repository for all code, schematics and PCB board layouts for the Quadcopter Project.<br>
 Personal Project 2015/16 IICS<br>
 <br>
 All code for various Pic Microcontrollers programmed in either XC8 or XC32. <br>
+All schematics and PCB board layouts designed in KiCad. <br>
 <br>
-Naming Scheme:<br>
+Naming Scheme for Code:<br>
 &nbsp;PPQCU_{RC/QCU}_[Processor Name]<br>
 <br>
 <b>Key:</b><br>
