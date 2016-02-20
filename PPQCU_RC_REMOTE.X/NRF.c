@@ -15,10 +15,9 @@ char defRX_PW_P0;
 
 BOOL powerOn = TRUE;
 char currentSTATUS;
-SPI_CHANNEL spic;
 
-void NRF_init(SPI_CHANNEL channel) {
-    spic = channel;
+
+void NRF_init() {
     //Compile Startup Settings into Default Register Values
     defCONFIG = (MASK_RX_DR << 6)|(MASK_TX_DS<< 5)|(MASK_MAX_RT<< 4)|(EN_CRC<< 3)|(CRCO<< 2);
     defEN_AA = (ENAA_P5 << 5)|(ENAA_P4 << 4)|(ENAA_P3 << 3)|(ENAA_P2 << 2)|(ENAA_P1 << 1)|(ENAA_P0);
@@ -33,14 +32,14 @@ void NRF_init(SPI_CHANNEL channel) {
     
     int x;
     for (x = 0; x < 100; x++) {
-        __asm__("nop");
+       asm("nop");
     }
     
-    //Active SPI module with corrct edge, mode, phase etc
+    //Active SPI module with correct edge, mode, phase etc
+    SPI_init();
 
-
-    ncs_H;
-    nce_L;
+    ncs = 1;
+    nce = 0;
     
     char n=0;
 
@@ -49,13 +48,13 @@ void NRF_init(SPI_CHANNEL channel) {
     //Settings + Power On + RX
     NRF_wreg(NRF_RG__CONFIG, defCONFIG | 0b11);
     for (int i = 0; i < 10; i++) {
-        __asm__("nop");
+        asm("nop");
     }
     
-    
+   
     
     rndtester = NRF_rreg(NRF_RG__CONFIG);
-    __asm__("NOP");
+    asm("NOP");
     //Set Auto Acknowledge
     NRF_wreg(NRF_RG__EN_AA, defEN_AA);
     //Set Data Pipes Enabled
@@ -74,20 +73,20 @@ void NRF_init(SPI_CHANNEL channel) {
     NRF_wreg(NRF_RG__FEATURE, 0b00000001);
 
     //Set RX Address
-    ncs_L;
-    SPI_trans(spic, NRF_CMD__W_REGISTER | NRF_RG__RX_ADDR_P0);
-    SPI_trans(spic, ADDRESS0);
-    SPI_trans(spic, ADDRESS1);
-    SPI_trans(spic, ADDRESS2);
-    ncs_H;
+    ncs = 0;
+    SPI_trans(NRF_CMD__W_REGISTER | NRF_RG__RX_ADDR_P0);
+    SPI_trans(ADDRESS0);
+    SPI_trans(ADDRESS1);
+    SPI_trans(ADDRESS2);
+    ncs = 1;
 
     //Set TX Address
-    ncs_L;
-    SPI_trans(spic, NRF_CMD__W_REGISTER | NRF_RG__TX_ADDR);
-    SPI_trans(spic, ADDRESS0);
-    SPI_trans(spic, ADDRESS1);
-    SPI_trans(spic, ADDRESS2);
-    ncs_H;
+    ncs = 0;
+    SPI_trans(NRF_CMD__W_REGISTER | NRF_RG__TX_ADDR);
+    SPI_trans(ADDRESS0);
+    SPI_trans(ADDRESS1);
+    SPI_trans(ADDRESS2);
+    ncs = 1;
 
     //Flush
     NRF_cmd(NRF_CMD__FLUSH_RX);
@@ -95,35 +94,40 @@ void NRF_init(SPI_CHANNEL channel) {
     NRF_wreg(NRF_RG__STATUS, 0x70);
     
     //Check if Status register contains written value
-    ncs_L;
-    SPI_trans(spic, 0b11111111);
-    probe = SPI_trans(spic, 0x70);
-    ncs_H;   
+    asm("NOP");
+    asm("NOP");
+    asm("NOP");
+    
+    ncs = 0;
+    probe = SPI_trans(0b11111111);
+    SPI_trans(0x00);
+    ncs = 1;   
  
-    while(probe = 0){
-        __asm__("nop");
-    } 
+    while(probe == 0){
+        asm("nop");
+    }
+    
 }
 
 void NRF_wreg(char Reg, char val) {
-    ncs_L;
-    wreg_test1 = SPI_trans(spic, NRF_CMD__W_REGISTER |(Reg & 0b00011111));
-    wreg_test2 = SPI_trans(spic, val);
-    ncs_H;
+   ncs = 0;
+    wreg_test1 = SPI_trans(NRF_CMD__W_REGISTER |(Reg & 0b00011111));
+    wreg_test2 = SPI_trans(val);
+   ncs = 1;
 }
 
 int NRF_cmd(char cmd) {
-    ncs_L;
-    int val = SPI_trans(spic, cmd);
-    ncs_H;
+    ncs = 0;
+    int val = SPI_trans(cmd);
+    ncs = 1;
     return val;
 }
 
 int NRF_rreg(char Reg) {
-    ncs_L;
-    SPI_trans(spic, NRF_CMD__R_REGISTER | (Reg & 0b00011111));
-    int val = SPI_trans(spic, 0b00);
-    ncs_H;
+    ncs = 0;
+    SPI_trans(NRF_CMD__R_REGISTER | (Reg & 0b00011111));
+    int val = SPI_trans(0b00);
+    ncs = 1;
     return val;
 }
 
@@ -133,15 +137,15 @@ void NRF_grabClearStatus(){
 }
 
 BOOL NRF_checkRX() {
-    return !(currentSTATUS && 0b01000000);
+return (currentSTATUS && 0b01000000);
 }
 
 BOOL NRF_checkMAX(){
-    return !(currentSTATUS && 0b00010000);
+    return (currentSTATUS && 0b00010000);
 }
 
 BOOL NRF_checkTX(){
-    return !(currentSTATUS && 0b00100000);
+    return (currentSTATUS && 0b00100000);
 }
 
 void NRF_setRX(){
@@ -163,25 +167,4 @@ int NRF_RXBuffer(char* buf) {
 BOOL NRF_TX_done(){
     return !(NRF_rreg(NRF_RG__STATUS) & 0b00100000);
     
-}
-
-void NRF_TX(char buf[], BOOL ack) {
-    //Clear TX_Done Bit
-    NRF_wreg(NRF_RG__STATUS,0b00100000);
-    NRF_setTX();
-    ncs_L;
-    if(ack)
-        SPI_trans(spic, NRF_CMD__W_TX_PAYLOAD);
-    else
-        SPI_trans(spic, NRF_CMD__W_TX_PAYLOAD_NO_ACK);
-    
-    for(int i = 1; i <= RX_PW_P0; i++){
-        SPI_trans(spic, buf[i-1]);
-    }
-    
-    ncs_H;
-    nce_H;
-    __asm__("nop");
-    __asm__("nop");
-    nce_L;
 }

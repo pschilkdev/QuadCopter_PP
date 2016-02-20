@@ -1,70 +1,56 @@
 #include "Quadcopter.h"
-void motor_updated(int mfl, int mfr, int mbl, int mbr){
-    IIC_start();
-    while(IIC_status(IIC1, IIC_STAT_START)){;}
+#include "IIC.h"
 
-    //Send Address, Prepare ms1, wait
-    IIC_address(IIC1, IIC_ADR_INT, IIC_WRITE);
-    char msg = ((0b111111110000 & mfl)>> 4);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+#define VAL_PRELOAD 41536
+
+#define s1 (LATEbits.LATE0)
+#define s2 (LATEbits.LATE1)
+#define s3 (LATGbits.LATG2)
+#define s4 (LATGbits.LATG3)
+
+void output(int);
+
+//motor values 0-23999
+BOOL motor_update(int mfl, int mfr, int mbl, int mbr) {
+    mfl = 23999-mfl;
+    mfr = 23999-mfr;
+    mbl = 23999-mbl;
+    mbr = 23999-mbr;
+    s1 = 1;
+    output(mfl);
+    s1 = 0;
     
-    //Send ms1, Prepare ms2, wait
-    IIC_put(IIC1, msg);
-    msg = ((0b1111 & mfl) << 4) | ((0b1111000000000 & mfr)>>8);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+    s2 = 1;
+    output(mfr);
+    s2 = 0;
     
-    //Send ms2, Prepare ms3, wait
-    IIC_put(IIC1,msg);
-    msg = ((0b11111111 & mfr));
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
+    s3 = 1;
+    output(mbl);
+    s3 = 0;
     
-    //Send ms3, Prepare ms4, wait
-    IIC_put(IIC1,msg);
-    msg = ((0b111111110000 & mbl) >> 4);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    //Send ms4, Prepare ms5, wait
-    IIC_put(IIC1,msg);
-    msg = ((0b1111 & mbl) << 4 ) | ((0b111100000000 & mbr)>>8);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    //Send ms5, Prepare ms6, wait
-    IIC_put(IIC1,msg);
-    msg = (IIC1,((0b11111111 & mbr)));
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    //Send ms6, wait
-    IIC_put(msg);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    //Stop
-    IIC_stop();
-    while(IIC_status(IIC1, IIC_STAT_STOP)){;}
-    while(IIC_status(IIC1, IIC_STAT_START)){;}
+    s4 = 1;
+    output(mbr);
+    s4 = 0;
 }
 
-void light_update(QC_LIGHTS lights){
-    IIC_start();
-    while(IIC_status(IIC1, IIC_STAT_START)){;}
-    
-    IIC_address(IIC1, IIC_ADR_RGB, IIC_WRITE);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    IIC_put(0b11111111 & lights);
-    while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
-    
-    IIC_stop();
-    while(IIC_status(IIC1, IIC_STAT_STOP)){;}
+void output(int time){
+    //Default timeout
+    IFS0bits.T1IF = 0;
+    TMR1 = VAL_PRELOAD;
+    T1CONbits.ON = 1;
+    while(!IFS0bits.T1IF){;}
+    //valued timeout
+   IFS0bits.T1IF = 0;
+    TMR1 = VAL_PRELOAD+time;
+    T1CONbits.ON = 1;
+    while(!IFS0bits.T1IF){;}
 }
-
-char read_battery(){
-    
-}
-
-void chips_reset(){
+   
+void chips_reset() {
     LATFbits.LATF0 = 0;
 }
 
-void chips_run(){
+void chips_run() {
     LATFbits.LATF0 = 1;
 }
+

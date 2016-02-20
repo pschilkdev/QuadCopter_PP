@@ -86,6 +86,8 @@ extern "C" {
     void IIC_address(IIC_CHANNEL, char , IIC_OPERATION );
     void IIC_put(IIC_CHANNEL , char );
     char IIC_get(IIC_CHANNEL );
+    
+#define status_mask 0b11111
 
 #ifdef	__cplusplus
 }

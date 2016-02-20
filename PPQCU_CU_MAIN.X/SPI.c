@@ -42,7 +42,11 @@ void SPI_init(SPI_CHANNEL channel, SPI_INITF flag, int baud) {
             SPI3BUF = 0; //Clear Buffer
             SPI3BRG = prsclr;
             SPI3CON = flag; //Setup options determined by flags
-            SPI3CONbits.ENHBUF = 1;
+            //DEBUG
+            //Set OFE to be not important
+            SPI3CON2bits.IGNROV = 1;
+            //DEBUG
+            // SPI3CONbits.ENHBUF = 1;
             __asm__("nop"); //Just to be sure
             SPI3CONbits. ON = 1;
             __asm__("nop"); //Just to be sure

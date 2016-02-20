@@ -25,7 +25,7 @@ typedef unsigned char BOOL;
     //System clock frequency
 #define F_OSC 48000000
     //Peripheral Clock Divider
-#define F_PER_DIV 8
+#define F_PER_DIV 2
     //Peripheral Clock frequency
 #define F_PER F_OSC/F_PER_DIV
 

@@ -1,3 +1,4 @@
+
 /* 
  * File:   NRF.h
  * Author: Philipp
@@ -60,15 +61,17 @@ extern "C" {
 #define NRF_RG__DYNPD 0x1C
 #define NRF_RG__FEATURE 0x1D
     
-    void NRF_init(SPI_CHANNEL channel);
+    void NRF_init();
     int NRF_cmd(char cmd);
     void NRF_wreg(char Reg,char val);
     int  NRF_rreg(char Reg);
     BOOL NRF_check();
     int NRF_RXBuffer_Length();
     int NRF_RXBuffer(char*);
+    void NRF_setTX();
     void NRF_TXBuffer(char, char*,BOOL);
-    void NRF_setRX();
+    BOOL NRF_checkRX();
+    BOOL NRF_checkTX();
     
 //Values
 #define byte3 0b01
@@ -85,8 +88,8 @@ extern "C" {
 #define n0dbm 0b11
     
 //CONFIG
-#define MASK_RX_DR FALSE
-#define MASK_TX_DS TRUE
+#define MASK_RX_DR TRUE
+#define MASK_TX_DS FALSE
 #define MASK_MAX_RT TRUE
 #define EN_CRC TRUE
 #define CRCO FALSE
@@ -128,15 +131,9 @@ extern "C" {
 //RX_PW_P0
 #define RX_PW_P0 32
     
-    
-
-#define nce_H (LATBbits.LATB13 = 1)
-#define nce_L (LATBbits.LATB13 = 0)
-    
-#define ncs_H (LATBbits.LATB15 = 1)
-#define ncs_L (LATBbits.LATB15 = 0)
-    
-#define nIRQ (PORTBbits.RB12)
+   
+#define nce LATCbits.LATC0
+#define ncs LATCbits.LATC7
 
 #define ADDRESS0 0b00101011
 #define ADDRESS1 0b00101011

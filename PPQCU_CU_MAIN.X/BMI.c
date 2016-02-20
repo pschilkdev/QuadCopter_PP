@@ -10,7 +10,7 @@ void BMI_init(SPI_CHANNEL spi) {
             SPI_INITF_MASTER |
             SPI_INITF_MODE_8 |
             SPI_INITF_CKE_ACTIVE_TO_IDLE
-            , 9600);
+            , 100000);
 
     bcsb_H;
     __asm__("nop");
