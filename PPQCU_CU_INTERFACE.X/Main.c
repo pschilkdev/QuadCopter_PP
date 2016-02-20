@@ -16,6 +16,11 @@ void init_INT();
 void init_I2C();
 void init_IO();
 
+#define MUX_RESET LATAbits.LATA5
+#define MUX_ADVANCE LATAbits.LATA4
+#define GATE LATAbits.LATA0
+
+#define IIC_ADR_INT 0x30
 //OPERATION
 void handshake();
 void output(int value);
@@ -32,6 +37,17 @@ int Serv4;
 int Serv5;
 int Serv6;
 
+
+int rc1, rc2, rc3, rc4, rc5, rc6;
+int error;
+int count;
+
+int currentVal;
+char currentValH;
+char currentValL;
+
+
+
 /*
  *  
  */
@@ -39,17 +55,16 @@ int i;
 
 int main(int argc, char** argv) {
 
-    for(int xz = 0; xz < 10000; xz++){
+    for (int xz = 0; xz < 10000; xz++) {
         asm("NOP");
     }
-    
+
     Serv1 = 0;
     Serv2 = 0;
     Serv3 = 0;
     Serv4 = 0;
     Serv5 = 0;
     Serv6 = 0;
-
 
     init_IO();
     init_OSC();
@@ -58,19 +73,36 @@ int main(int argc, char** argv) {
 
     handshake();
     while (1) {
-        
         output(Serv1);
         output(Serv2);
         output(Serv3);
         output(Serv4);
         output(Serv5);
         output(Serv6);
-        
-        timeout();
+
+        while (1) {
+            if (PIR1bits.SSP1IF) {
+                error = 0;
+                //RECEIVE
+                PIR1bits.SSP1IF = 0;
+                //clear Buffer Full Flag
+                int temp = SSP1BUF;
+                receive();
+                //Reconstruct Data
+                if (!error) {
+                    Serv1 = (0b111111111111) & ((rc1 << 4) | ((rc2 & 0b11110000) >> 4));
+                    Serv2 = (0b111111111111) & (((rc2 & 0b1111) << 8) | rc3);
+                    Serv3 = (0b111111111111) & ((rc4 << 4) | ((rc5 & 0b11110000) >> 4));
+                    Serv2 = (0b111111111111) & (((rc5 & 0b1111) << 8) | rc6);
+                }
+                PIR1bits.SSP1IF = 0;
+                return;
+                reset_mux();
+            }
+        }
+
     }
-
     return (EXIT_SUCCESS);
-
 }
 
 void init_OSC() {
@@ -131,10 +163,6 @@ void handshake() {
     //TODO
 }
 
-int currentVal;
-char currentValH;
-char currentValL;
-
 void output(int value) {
     //turn into 13 bit value
     value = value << 1;
@@ -148,11 +176,11 @@ void output(int value) {
     currentValL = currentVal & 0x00FF;
 
     //Advance MUX
-    LATAbits.LATA4 = 1;
-    for (int i = 0; i < 10; i++) {
+    MUX_ADVANCE = 1;
+    for (int i = 0; i < 50; i++) {
         asm("nop");
     }
-    LATAbits.LATA4 = 0;
+    MUX_ADVANCE = 0;
 
     //===Time Sensitive===
     //Start Equivelant wait (2.1 ms)
@@ -167,7 +195,7 @@ void output(int value) {
     T1CONbits.TMR1ON = 0b1;
 
     //Open Gate
-    LATAbits.LATA0 = 1;
+    GATE = 1;
 
 
     //wait for finish
@@ -188,7 +216,7 @@ void output(int value) {
     }
 
     //Close Gate
-    LATAbits.LATA0 = 0b0;
+    GATE = 0b0;
 
     //Reset T1
 
@@ -204,103 +232,52 @@ void output(int value) {
 }
 
 void reset_mux() {
-    LATAbits.LATA5 = 1;
-    for (int i = 0; i < 10; i++) {
+    MUX_RESET = 1;
+    for (int i = 0; i < 50; i++) {
         asm("nop");
     }
-    LATAbits.LATA5 = 0;
+    MUX_RESET = 0;
 }
 
-int rc1, rc2, rc3, rc4, rc5, rc6;
-int error;
-int count;
-void timeout() {
-    //Advance mux to ready position
-    LATAbits.LATA4 = 1;
-    for (int i = 0; i < 10; i++) {
-        asm("nop");
-    }
-    LATAbits.LATA4 = 0;
-
-    //Start timer
-    PIR1bits.TMR2IF = 0;
-    TMR2 = TM_OUT_PRELOAD;
-    
-    int running = 1;
-    count = 0;
-    //Wait till over
-    
-    while (running) {
-        if(PIR1bits.TMR2IF){
-            count++;
-            if(count == 10){
-                running = 0;
-            }
-        } 
-        if (PIR1bits.SSP1IF) {
-            error = 0;
-            //RECEIVE
-            PIR1bits.SSP1IF = 0;
-            //clear Buffer Full Flag
-            int temp = SSP1BUF;
-            receive();     
-            //Reconstruct Data
-            if (!error) {
-                Serv1 = (0b111111111111) & ((rc1 << 4) | ((rc2 & 0b11110000) >> 4));
-                Serv2 = (0b111111111111) & (((rc2 & 0b1111) << 8) | rc3);
-                Serv3 = (0b111111111111) & ((rc4 << 4) | ((rc5 & 0b11110000) >> 4));
-                Serv2 = (0b111111111111) & (((rc5 & 0b1111) << 8) | rc6);
-            }
-            PIR1bits.SSP1IF = 0;
-        } 
-    }
-    
-    //reset mux
-    reset_mux();
-    
-    //Reset Timeout Timer
-    PIR1bits.TMR2IF = 0;
-}
-
-void wait(int time){
+void wait(int time) {
     int n = 0;
-    while(!PIR1bits.SSP1IF){
+    while (!PIR1bits.SSP1IF) {
         n++;
-        if(n > time){
+        if (n > time) {
             error = 1;
             return;
         }
     }
 }
 
-void receive(){
+void receive() {
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc1 = SSP1BUF;
-    
+
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc2 = SSP1BUF;
-    
+
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc3 = SSP1BUF;
-    
+
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc4 = SSP1BUF;
-    
+
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc5 = SSP1BUF;
-    
+
     wait(1000);
-    if(error)
+    if (error)
         return;
     rc6 = SSP1BUF;
 }
