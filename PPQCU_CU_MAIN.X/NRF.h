@@ -15,6 +15,7 @@ extern "C" {
 #include "SPI.h"
 #include "config.h"
 #include <xc.h>
+#include "IO.h"
 
 // ====== Commands ========
     
@@ -129,11 +130,11 @@ extern "C" {
     
     
 
-#define nce_H (LATBbits.LATB13 = 1)
-#define nce_L (LATBbits.LATB13 = 0)
+#define nce_H (IO_wCE = 1)
+#define nce_L (IO_wCE = 0)
     
-#define ncs_H (LATBbits.LATB15 = 1)
-#define ncs_L (LATBbits.LATB15 = 0)
+#define ncs_H (IO_wCSN = 1)
+#define ncs_L (IO_wCSN = 0)
 
 #define ADDRESS0 0b00101011
 #define ADDRESS1 0b00101011

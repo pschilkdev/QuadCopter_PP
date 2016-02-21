@@ -11,6 +11,7 @@
 #include "config.h"
 #include "NRF.h"
 #include "IIC.h"
+#include "IO.h"
 
 //Inital Configs:
 void init_INT();
@@ -51,54 +52,64 @@ void init_IO() {
     ANSELG = 0x0000;
     
     //NRF
-    TRISBbits.TRISB9 = 1; //MISO
-    SDI3Rbits.SDI3R = 0b0101;
-    TRISBbits.TRISB10 = 0; //MOSI
-    RPB10Rbits.RPB10R = 0b1110;
-    TRISBbits.TRISB13 = 0; //CE
-    TRISBbits.TRISB14 = 0; //SCK
-    TRISBbits.TRISB15 = 0; //CSN
+    IO_wMISO_TRI = 1; //MISO
+    SDI3Rbits.SDI3R = IO_wMISO_REG;
+    IO_wMOSI_TRI = 0; //MOSI
+    IO_wMOSI_REG = 0b1110;
+    IO_wCE_TRI = 0; //CE
+    IO_wSCK_TRI = 0; //SCK
+    IO_wCSN_TRI = 0; //CSN
     
     //Debug parallel Port
-    TRISE = 0;
+    IO_DEBUG_TRI = 0;
     
     //BMI
-    TRISGbits.TRISG7 = 1;//MISO
-    SDI2Rbits.SDI2R = 0b0001;
-    TRISGbits.TRISG8 = 0;//MOSI
-    RPG8Rbits.RPG8R = 0b0110;
-    TRISGbits.TRISG6 = 0;//SCK
-    TRISBbits.TRISB5 = 0;//CSB
+    IO_aMISO_TRI = 1;//MISO
+    SDI2Rbits.SDI2R = IO_aMISO_REG;
+    IO_aMOSI_TRI = 0;//MOSI
+    IO_aMOSI_REG = 0b0110;
+    IO_aSCK_TRI = 0;//SCK
+    IO_aCSB_TRI = 0;//CSB
     
-    //BatWarn1
-    TRISBbits.TRISB11 = 1;
+    //BattWarn
+    IO_battWarn1_TRI = 1;
+    IO_battWarn2_TRI = 1;
     
-    //ServIntRd
-    TRISBbits.TRISB8 = 1;
-    
-    // battWarn1 PORTBbits.RB11
-    // battWarn2 PORTFbits.RB3
-    
-    
-    //TRISF2 = 0 battled out1
-    //TRISF3 = 1 battWarn2
-    //TRISF6 = 0 battled out2
-    TRISFSET = 0b0001000;
+    //Battery Leds
+    IO_battLed1_TRI = 0;
+    IO_battLed2_TRI = 0;
     
     //SCLEAR
-    TRISFbits.TRISF0 = 0;
+    IO_SCLEAR_TRI = 0;
     
     //BUTTON INPUT & CHANNEL SELECT BITS 
-    TRISD = 0b11111110;    
+    IO_B1_TRI = 1;
+    IO_B2_TRI = 1;
+    IO_B3_TRI = 1;
+    
+    IO_C1_TRI = 1;
+    IO_C2_TRI = 1;
+    IO_C3_TRI = 1;
+    IO_C4_TRI = 1;
 }
 
 void init_INT(){
+     
+}
+
+void init_IIC(){
     
-    //IoC for BattWarn
+}
+
+void init_INTERFACE(){
     
+}
+
+void init_LIGHTS(){
     
-    //IoC for ServIntRD
-    
+}
+
+void init_BATSENSE(){
     
 }
 

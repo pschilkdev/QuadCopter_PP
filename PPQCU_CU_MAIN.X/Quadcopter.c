@@ -1,5 +1,6 @@
 #include "Quadcopter.h"
 #include "IIC.h"
+#include "IO.h"
 
 int battWarnLevel = 0;
 
@@ -67,14 +68,14 @@ char read_battery(){
 
 BOOL battWarn(){
     if(battWarnLevel == 0){
-        if(PORTBbits.RB11){
+        if(IO_battWarn1){
             //Entering Level 1
             battWarnLevel = 1;
             light_update(LIGHTS_FLYING_BAT);
             return FALSE;
         }
     } else if(battWarnLevel == 1){
-        if(PORTFbits.RF3){
+        if(IO_battWarn2){
             //Entering Level 2
             battWarnLevel = 2;
             light_update(LIGHTS_RECOVER);
@@ -86,9 +87,9 @@ BOOL battWarn(){
 }
 
 void chips_reset(){
-    LATFbits.LATF0 = 0;
+    IO_SCLEAR = 0;
 }
 
 void chips_run(){
-    LATFbits.LATF0 = 1;
+    IO_SCLEAR = 1;
 }

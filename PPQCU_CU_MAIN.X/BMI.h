@@ -15,14 +15,15 @@ extern "C" {
 #include "SPI.h"
 #include "config.h"
 #include <xc.h>
+#include "IO.h"
 
     typedef enum {
         BMI_READ = 1,
         BMI_WRITE = 0
     } BMI_OPERATION;
 
-#define bcsb_H (LATBbits.LATB5 = 1)
-#define bcsb_L (LATBbits.LATB5 = 0)
+#define bcsb_H (IO_aCSB = 1)
+#define bcsb_L (IO_aCSB = 0)
 
     //Registers
 #define BMI_REG__CMD 0x7E
