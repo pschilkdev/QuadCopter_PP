@@ -1,7 +1,8 @@
 #include "Quadcopter.h"
+#include "IIC.h"
 void motor_updated(int mfl, int mfr, int mbl, int mbr){
     
-    IIC_start();
+    IIC_start(IIC1);
     while(IIC_status(IIC1, IIC_STAT_START)){;}
 
     //Send Address, Prepare ms1, wait
@@ -35,25 +36,25 @@ void motor_updated(int mfl, int mfr, int mbl, int mbr){
     while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL) || IIC_status(IIC1, IIC_STAT_TRANSMIT)){;}
     
     //Send ms6, wait
-    IIC_put(msg);
+    IIC_put(IIC1,msg);
     while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL) || IIC_status(IIC1, IIC_STAT_TRANSMIT)){;}
     
     //Stop
-    IIC_stop();
+    IIC_stop(IIC1);
     while(IIC_status(IIC1, IIC_STAT_STOP)){;}
 }
 
 void light_update(QC_LIGHTS lights){
-    IIC_start();
+    IIC_start(IIC1);
     while(IIC_status(IIC1, IIC_STAT_START)){;}
     
     IIC_address(IIC1, IIC_ADR_RGB, IIC_WRITE);
     while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
     
-    IIC_put(0b11111111 & lights);
+    IIC_put(IIC1,0b11111111 & lights);
     while(IIC_status(IIC1, IIC_STAT_TRANSMIT_FULL)){;}
     
-    IIC_stop();
+    IIC_stop(IIC1);
     while(IIC_status(IIC1, IIC_STAT_STOP)){;}
 }
 

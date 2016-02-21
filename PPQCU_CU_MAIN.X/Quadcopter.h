@@ -12,15 +12,19 @@
 extern "C" {
 #endif
 
+#include "config.h"
+    
 #define IIC_ADR_BAT 0x50
 #define IIC_ADR_RGB 0x40
 #define IIC_ADR_INT 0x30
 
-    typedef enum{
-       
-    }QC_LIGHTS;
-    
-#define 
+    typedef enum {
+        STARTUP = 1,
+        STANDBY = 2,
+        FLYING = 3,
+        FLYING_BAT = 4,
+        RECOVER = 5
+    } QC_LIGHTS;
 
 #ifdef	__cplusplus
 }

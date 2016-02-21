@@ -74,18 +74,17 @@ extern "C" {
         IIC_STAT_TRANSMIT_FULL =       0b00000000000000000000000000000001,
     } IIC_STATUS;
 
-    void IIC_init(IIC_CHANNEL channel, int flags, int baud);
-
-    void IIC_clkstretch(IIC_CHANNEL );
-    void IIC_receive(IIC_CHANNEL );
-    void IIC_stop(IIC_CHANNEL);
-    void IIC_start(IIC_CHANNEL );
-    void IIC_restart(IIC_CHANNEL );
-    void IIC_ack(IIC_CHANNEL );
-    BOOL IIC_status(IIC_CHANNEL, IIC_STATUS);
-    void IIC_address(IIC_CHANNEL, char , IIC_OPERATION );
-    void IIC_put(IIC_CHANNEL , char );
-    char IIC_get(IIC_CHANNEL );
+void IIC_init(IIC_CHANNEL channel, int flags, int baud);
+void IIC_clkstretch(IIC_CHANNEL channel);
+void IIC_receive(IIC_CHANNEL channel);
+void IIC_stop(IIC_CHANNEL channel);
+void IIC_start(IIC_CHANNEL channel);
+void IIC_restart(IIC_CHANNEL channel);
+void IIC_ack(IIC_CHANNEL channel);
+BOOL IIC_status(IIC_CHANNEL channel, IIC_STATUS stat);
+void IIC_address(IIC_CHANNEL channel, char address, IIC_OPERATION op);
+void IIC_put(IIC_CHANNEL channel,char data);
+char IIC_get(IIC_CHANNEL channel);
 
 #ifdef	__cplusplus
 }

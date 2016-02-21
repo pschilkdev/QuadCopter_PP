@@ -1,4 +1,4 @@
-s/* 
+/* 
  * File:   Main.c
  * Author: Philipp
  *
@@ -10,7 +10,7 @@ s/*
 #include <p32xxxx.h>
 #include "config.h"
 #include "NRF.h"
-#include <Math.h>
+#include "IIC.h"
 
 //Inital Configs:
 void init_INT();
@@ -22,12 +22,12 @@ void init_LIGHTS();
 void init_NRF();
 
 int main(int argc, char** argv) {
-
-    
     for(int i = 0; i<10000000; i++){}
     //INIT
     init_IO();
     init_INT();
+
+    
     
    
 }
