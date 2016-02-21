@@ -343,7 +343,7 @@ R6 and R2 so that:\n1.25(1+(R2/R6)) = 3.3\n\n
 Text Notes 2150 5400 0    60   ~ 0
 Use R4 and R8 to Trim\n
 Text Notes 1000 3900 0    60   ~ 0
-R6 and R2 so that:\n1.25(1+(R1/R5)) = 5\n
+R1 and R5 so that:\n1.25(1+(R1/R5)) = 5\n
 Text Notes 2100 3800 0    60   ~ 0
 Use R7 and R3 to Trim\n
 $Comp
