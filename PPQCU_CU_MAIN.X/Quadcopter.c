@@ -1,5 +1,8 @@
 #include "Quadcopter.h"
 #include "IIC.h"
+
+int battWarnLevel = 0;
+
 void motor_updated(int mfl, int mfr, int mbl, int mbr){
     
     IIC_start(IIC1);
@@ -60,6 +63,26 @@ void light_update(QC_LIGHTS lights){
 
 char read_battery(){
     
+}
+
+BOOL battWarn(){
+    if(battWarnLevel == 0){
+        if(PORTBbits.RB11){
+            //Entering Level 1
+            battWarnLevel = 1;
+            light_update(LIGHTS_FLYING_BAT);
+            return FALSE;
+        }
+    } else if(battWarnLevel == 1){
+        if(PORTFbits.RF3){
+            //Entering Level 2
+            battWarnLevel = 2;
+            light_update(LIGHTS_RECOVER);
+            return TRUE;
+        }
+    } else {
+        return 0;
+    }    
 }
 
 void chips_reset(){

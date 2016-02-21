@@ -24,12 +24,13 @@ void init_NRF();
 int main(int argc, char** argv) {
     for(int i = 0; i<10000000; i++){}
     //INIT
-    init_IO();
     init_INT();
-
-    
-    
-   
+    init_IO();
+    init_IIC();
+    init_INTERFACE();
+    init_LIGHTS();
+    init_BATSENSE();
+    init_NRF();
 }
 
 int tester;
@@ -69,15 +70,18 @@ void init_IO() {
     TRISGbits.TRISG6 = 0;//SCK
     TRISBbits.TRISB5 = 0;//CSB
     
-    //BatWarn
+    //BatWarn1
     TRISBbits.TRISB11 = 1;
     
     //ServIntRd
     TRISBbits.TRISB8 = 1;
     
-    //battled
+    // battWarn1 PORTBbits.RB11
+    // battWarn2 PORTFbits.RB3
+    
+    
     //TRISF2 = 0 battled out1
-    //TRISF3 = 1 battled in
+    //TRISF3 = 1 battWarn2
     //TRISF6 = 0 battled out2
     TRISFSET = 0b0001000;
     

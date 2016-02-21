@@ -19,11 +19,11 @@ extern "C" {
 #define IIC_ADR_INT 0x30
 
     typedef enum {
-        STARTUP = 1,
-        STANDBY = 2,
-        FLYING = 3,
-        FLYING_BAT = 4,
-        RECOVER = 5
+        LIGHTS_STARTUP = 1,
+        LIGHTS_STANDBY = 2,
+        LIGHTS_FLYING = 3,
+        LIGHTS_FLYING_BAT = 4,
+        LIGHTS_RECOVER = 5
     } QC_LIGHTS;
 
 #ifdef	__cplusplus
