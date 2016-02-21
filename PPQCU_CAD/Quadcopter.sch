@@ -2517,9 +2517,9 @@ F 3 "" H 10750 9000 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 Text GLabel 12600 8900 2    39   Input ~ 0
-battWarn
+battWarn1
 Text GLabel 5700 4250 0    39   Input ~ 0
-battWarn
+battWarn1
 $Comp
 L R_Small R34
 U 1 1 568BFFD4
@@ -2997,11 +2997,11 @@ $EndComp
 Text GLabel 10700 8300 1    39   Input ~ 0
 batled_out1
 Text GLabel 10950 8900 0    39   Input ~ 0
-batled_in
+battWarn2
 Text GLabel 7850 5300 3    39   Input ~ 0
 batled_out1
 Text GLabel 7750 5300 3    39   Input ~ 0
-batled_in
+battWarn2
 Text GLabel 10800 8300 1    39   Input ~ 0
 batled_out2
 Text GLabel 7950 5300 3    39   Input ~ 0
