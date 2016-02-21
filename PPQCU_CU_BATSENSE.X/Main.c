@@ -12,7 +12,6 @@
 void init_OSC();
 void init_ADC();
 void init_I2C();
-void init_INT();
 void init_IO();
 
 void handshake();
@@ -24,37 +23,38 @@ void timeout();
  * 
  */
 
+#define thresh1 100
+#define thresh2 90
 int status;
-int thresh1;
-int thresh2;
 
 int main(int argc, char** argv) {
 
     init_OSC();
     init_ADC();
     init_I2C();
-    init_INT();
     init_IO();
-
-    handshake();
 
     while (1) {
         status = checkBattery();
-
         if (status == 0) {
             //Battery Ok
+            LATAbits.LATA0 = 0;
+            LATAbits.LATA5 = 0;
         }
         if (status == 1) {
             //Warn Stage 1
+            LATAbits.LATA0 = 1;
+            LATAbits.LATA5 = 0;
         }
         if (status == 2) {
             //Warn Stage 2
+            LATAbits.LATA0 = 0;
+            LATAbits.LATA5 = 1;
         }
-        
+
         //Timeout
-
+        timeout();
     }
-
     return (EXIT_SUCCESS);
 }
 
@@ -81,10 +81,6 @@ void init_I2C() {
 
 }
 
-void init_INT() {
-
-}
-
 void init_IO() {
     ANSELA = 0b0001000;
     TRISAbits.TRISA5 = 0;
@@ -92,11 +88,6 @@ void init_IO() {
     TRISAbits.TRISA0 = 0;
     TRISAbits.TRISA1 = 1;
     TRISAbits.TRISA2 = 1;
-}
-
-void handshake() {
-    thresh1 = 500;
-    thresh2 = 400;
 }
 
 int checkBattery() {
@@ -112,12 +103,12 @@ int checkBattery() {
     for (int i = 0; i < 15; i++) {
         asm("nop");
     }
-    int val = (v1 + v2 + v3) / 4;
+    int val = (v1 + v2 + v3) / 3;
 
-    if (val <= thresh1) {
-        return 1;
-    } else if (val <= thresh2) {
+    if (val > thresh2) {
         return 2;
+    } else if (val > thresh1) {
+        return 1;
     } else {
         return 0;
     }
@@ -134,6 +125,6 @@ int readADC() {
     return ((ADRESH << 8) | ADRESL);
 }
 
-void timeout(){
-    
+void timeout() {
+
 }
