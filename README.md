@@ -59,3 +59,6 @@ Naming Scheme for Code:<br>
 &nbsp;&nbsp;&nbsp;Programmed in C using the XC8 Complier<br>
 &nbsp;&nbsp;MicroController Purpose:<br>
 &nbsp;&nbsp;&nbsp;Main Processor on the Remote Controller<br>
+<br>
+<b>Licensing/Attribution:</b><br>
+NRF wireless handler used (modified): tinkerer.eu port by g4lvanix: https://github.com/g4lvanix/NRF-wireless
