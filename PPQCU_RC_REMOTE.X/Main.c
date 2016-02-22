@@ -16,6 +16,10 @@ double map(double value, float x_min, float x_max, float y_min, float y_max);
 void calibrate_joystick();
 int sample(char);
 int read_ADC(char channel);
+void save_calib();
+void load_calib();
+char ee_read(int ad);
+void ee_write(int ad, char val);
 
 #define button PORTCbits.RC1
 #define led LATAbits.LA5
@@ -36,6 +40,22 @@ char v1;
 char v2;
 char v3;
 char v4;
+
+#define ad_j1_min 0x01
+#define ad_j1_max 0x03
+
+#define ad_j2_min 0x05
+#define ad_j2_max 0x07
+#define ad_j2_center 0x09
+
+#define ad_j3_min 0x0B
+#define ad_j3_max 0x0D
+#define ad_j3_center 0x0F
+
+#define ad_j4_min 0x11
+#define ad_j4_max 0x13
+#define ad_j4_center 0x15
+
 int j1_min;
 int j1_max;
 
@@ -56,7 +76,12 @@ int main(int argc, char** argv) {
     init_OSC();
     init_ADC();
 
-    calibrate_joystick();
+    if (button) {
+        calibrate_joystick();
+        save_calib();
+    } else {
+        load_calib();
+    }
 
     while (1) {
         //Read ADC
@@ -257,4 +282,80 @@ int read_ADC(char channel) {
         ;
     }
     return ((ADRESH & 0b11) << 8) | ADRESL;
+}
+
+void save_calib() {
+    ee_write(ad_j1_min, j1_min);
+    ee_write(ad_j1_max, j1_max);
+
+    ee_write(ad_j2_min, j2_min);
+    ee_write(ad_j2_max, j2_max);
+    ee_write(ad_j2_center, j2_center);
+
+    ee_write(ad_j3_min, j3_min);
+    ee_write(ad_j3_max, j3_max);
+    ee_write(ad_j3_center, j3_center);
+
+    ee_write(ad_j4_min, j4_min);
+    ee_write(ad_j4_max, j4_max);
+    ee_write(ad_j4_center, j4_center);
+}
+
+void load_calib() {
+    j1_min = ee_read(ad_j1_min);
+    j1_max = ee_read(ad_j1_max);
+    
+    j2_min = ee_read(ad_j2_min);
+    j2_max = ee_read(ad_j2_max);
+    j2_center = ee_read(ad_j2_center);
+    
+    j3_min = ee_read(ad_j3_min);
+    j3_max = ee_read(ad_j3_max);
+    j3_center = ee_read(ad_j3_center);
+    
+    j4_min = ee_read(ad_j4_min);
+    j4_max = ee_read(ad_j4_max);
+    j4_center = ee_read(ad_j4_center);
+}
+
+int ee_read(char ad) {
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EEADR = ad;
+    EECON1bits.RD = 1;
+    char val1 = EEDATA;
+    
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EEADR = ad + 1;
+    EECON1bits.RD = 1;
+    char val2 = EEDATA;
+    
+    int result = (0b11 & val1)|val2;
+    return result;
+}
+
+void ee_write(char ad, int val) {
+    char w1 = (val & 0b1100000000) >> 8;
+    char w2 = val & 0b111111111;
+    
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.WREN = 1;
+    EEADR = ad;
+    EEDATA = w1;
+    EECON2 = 0x55;
+    EECON2 = 0xAA;
+    EECON1bits.WR = 1;
+    while(EECON1bits.WR){;}
+    
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.WREN = 1;
+    EEADR = ad+1;
+    EEDATA = w2;
+    EECON2 = 0x55;
+    EECON2 = 0xAA;
+    EECON1bits.WR = 1;
+    while(EECON1bits.WR){;}
 }
