@@ -16,7 +16,7 @@ extern "C" {
 #define IO_wMISO_TRI TRISBbits.TRISB9
 #define IO_wMISO_REG 0b0101
 #define IO_wMOSI_TRI TRISBbits.TRISB1
-#define IO_wMOSI_REG RPB10Rbits.RPB10
+#define IO_wMOSI_REG RPB10Rbits.RPB10R
 #define IO_wCE_TRI TRISBbits.TRISB13
 #define IO_wCE LATBbits.LATB13
 #define IO_wSCK_TRI TRISBbits.TRISB14
