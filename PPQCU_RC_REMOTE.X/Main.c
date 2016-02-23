@@ -18,8 +18,8 @@ int sample(char);
 int read_ADC(char channel);
 void save_calib();
 void load_calib();
-char ee_read(int ad);
-void ee_write(int ad, char val);
+int ee_read(char ad);
+void ee_write(char ad, int val);
 
 #define button PORTCbits.RC1
 #define led LATAbits.LA5
