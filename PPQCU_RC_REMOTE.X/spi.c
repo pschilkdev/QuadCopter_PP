@@ -12,19 +12,6 @@
 #include "spi.h"
 
 void spi_init(void){
-    // disable MSSP
-    SSP1CON1bits.SSPEN = 0;
-    // SDI1 set
-    TRISCbits.TRISC4 = 1; // configure RC4 as input
-    ANSELCbits.ANSC4 = 0; // enable digital input buffer on RC4
-    // SS1 set
-    TRISAbits.TRISA5 = 1;
-    // SDO1 cleared
-    // SCK1 cleared
-    TRISCbits.TRISC5 = 0;
-    TRISCbits.TRISC3 = 0;
-
-    // SPI mode 0
     SSP1CON1bits.CKP = 0; // Idle state for clock is a low level
     SSP1STATbits.CKE = 1; // Transmit occurs on transition from active to Idle clock state
     SSP1STATbits.SMP = 1; // Input data sampled at end of data output time (took me 5 friggin' hours)
@@ -35,23 +22,17 @@ void spi_init(void){
 void spi_transmit_sync(unsigned char * data, unsigned int length){
     unsigned char tmp;
     while(length != 0){
-	SSP1BUF = *data;
-	while( !PIR1bits.SSP1IF ); // wait for buffer full
-        PIR1bits.SSP1IF = 0; // clear SSP1IF
-        tmp = SSP1BUF; // read out data
+        tmp = spi_fast_shift(*data);
         length--;
-	data++;
+	    data++;
     }
 }
 
 void spi_transfer_sync(unsigned char * dataout, unsigned char * datain, unsigned int length){
     while(length != 0){
-	SSP1BUF = *dataout;
-	while( !PIR1bits.SSP1IF ); // wait for buffer full
-        PIR1bits.SSP1IF = 0; // clear SSP1IF
-        *datain = SSP1BUF; // read out data
+        *datain = spi_fast_shift(*dataout);
         length--;
-	dataout++;
+	    dataout++;
         datain++;
     }
 }

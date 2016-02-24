@@ -31,7 +31,7 @@
 
 
 */
-#define _XTAL_FREQ 16000000
+#define _XTAL_FREQ 64000000
 #include <xc.h>
 #include "wl_module.h"
 #include "nRF24L01.h"
@@ -49,18 +49,8 @@ void wl_module_init(void)
 // Initializes pins and interrupt to communicate with the wl_module
 // Should be called in the early initializing phase at startup.
 {
-    // Define CSN and CE as Output and set them to default
-    TRISBbits.TRISB4 = 0;
-    TRISBbits.TRISB3 = 0;
     wl_module_CE_lo;
     wl_module_CSN_hi;
-
-    // set up INT2
-    ANSELBbits.ANSB2 = 0; // digital input buffer enabled
-    TRISBbits.TRISB2 = 1; // RB2 as input
-    INTCON2bits.INTEDG2 = 0; // trigger interrupt on falling edge
-    INTCON3bits.INT2IE = 1; // enable INT2 interrupt
-
     // Initialize spi module
     spi_init();
 }

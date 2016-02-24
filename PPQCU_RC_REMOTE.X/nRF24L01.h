@@ -1,4 +1,7 @@
 /*
+        Modifications by pschilkdev
+        https://github.com/pschilkdev
+ 
         Modifications by Elia Ritterbusch
         http://eliaselectronics.com
 

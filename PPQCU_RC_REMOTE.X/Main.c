@@ -8,10 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "config.h"
+#include "wl_module.h"
 
 void init_ADC();
 void init_OSC();
 void init_IO();
+void init_NRF();
 double map(double value, float x_min, float x_max, float y_min, float y_max);
 void calibrate_joystick();
 int sample(char);
@@ -20,6 +22,7 @@ void save_calib();
 void load_calib();
 int ee_read(char ad);
 void ee_write(char ad, int val);
+
 
 #define button PORTCbits.RC1
 #define led LATAbits.LA5
@@ -75,7 +78,8 @@ int main(int argc, char** argv) {
     init_IO();
     init_OSC();
     init_ADC();
-
+    init_NRF();
+    
     if (button) {
         calibrate_joystick();
         save_calib();
@@ -174,6 +178,10 @@ void init_ADC() {
 void init_OSC() {
     OSCCONbits.IRCF = 0b111;
     OSCTUNEbits.PLLEN = 0;
+}
+
+void init_NRF(){
+    wl_module_init();
 }
 
 void init_IO() {
