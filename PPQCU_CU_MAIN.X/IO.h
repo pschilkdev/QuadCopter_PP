@@ -40,9 +40,41 @@ extern "C" {
 
 #define IO_battLed1_TRI TRISFbits.TRISF2
 #define IO_battLed1 LATFbits.LATF2
-#define IO_battLed2_TRI TRISFbits.TRISF6
+#define IO_battLed2_TRI TRISFbits.TRISF6  
 #define IO_battLed2 LATFbits.LATF6
-    
+/*NOTE: ERROR IN PIC32MX120F064H HEADER
+PIN F6 NOT INCLUDED EVEN THOUGH ACTUAL PIN IN DATASHEET
+CHANGE THE FOLLOWING CODE IN p32mx120f064h.h:
+
+CHANGE PORTF UNION TO:
+	[...]
+    unsigned RF4:1;
+    unsigned RF5:1;
+	unsigned RF6:1;
+    unsigned :1;
+    unsigned RF8:1;
+	[...]
+	
+CHANGE LATF UNION TO:
+	[...]
+    unsigned LATF4:1;
+    unsigned LATF5:1;
+	unsigned LATF6:1;
+    unsigned :1;
+    unsigned LATF8:1;
+	[...]
+
+CHANGE TRISF UNION TO:
+    [...]
+    unsigned TRISF4:1;
+    unsigned TRISF5:1;
+	unsigned TRISF6:1;
+    unsigned :1;
+    unsigned TRISF8:1;
+    [...]
+*/
+
+
 #define IO_SCLEAR_TRI TRISFbits.TRISF0
 #define IO_SCLEAR LATFbits.LATF0
  

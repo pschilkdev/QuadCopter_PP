@@ -77,7 +77,7 @@ void init_IO() {
     
     //Battery Leds
     IO_battLed1_TRI = 0;
-    IO_battLed2_TRI = 0;
+    IO_battLed2_TRI = 0; //NOTE: ERROR IN HEADER FILE SEE IO.h
     
     //SCLEAR
     IO_SCLEAR_TRI = 0;
