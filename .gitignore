@@ -43,6 +43,8 @@ desktop.ini
 #KiCad
 _saved_*
 *.bak
+*.kicad_pcb-bak
+*.*bak
 
 # Debug files
 *.dSYM/
