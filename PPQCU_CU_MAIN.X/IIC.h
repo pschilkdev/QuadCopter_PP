@@ -83,6 +83,8 @@ void IIC_restart(IIC_CHANNEL channel);
 void IIC_ack(IIC_CHANNEL channel);
 BOOL IIC_status(IIC_CHANNEL channel, IIC_STATUS stat);
 void IIC_address(IIC_CHANNEL channel, char address, IIC_OPERATION op);
+BOOL IIC_wait(IIC_CHANNEL channel, IIC_STATUS stat, BOOL waitFor, int timeout);
+BOOL IIC_wait_TX(IIC_CHANNEL channel);
 void IIC_put(IIC_CHANNEL channel,char data);
 char IIC_get(IIC_CHANNEL channel);
 

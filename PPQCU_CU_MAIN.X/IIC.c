@@ -97,6 +97,22 @@ BOOL IIC_status(IIC_CHANNEL channel, IIC_STATUS stat){
        }
    }
 }
+
+BOOL IIC_wait(IIC_CHANNEL channel, IIC_STATUS stat, BOOL waitFor, int timeout){
+    int timer = 0;
+    while(IIC_status(channel,stat) != waitFor){
+        timer++;
+        if(timer > timeout)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+BOOL IIC_wait_TX(IIC_CHANNEL channel){
+    while(IIC_status(channel, IIC_STAT_TRANSMIT)){;}
+    return IIC_status(channel, IIC_STAT_ACK);
+}
+
 void IIC_address(IIC_CHANNEL channel, char address, IIC_OPERATION op){
     char value = ((address & 0b1111111) << 1) | op;
     IIC_put(channel, value);
